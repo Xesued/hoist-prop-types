@@ -6,7 +6,7 @@ import argparse
 import sys
 import codemod
 
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
 
 PROP_TYPES_LINE_REG = 'propTypes'
@@ -21,11 +21,15 @@ def suggestor_insert_prop_types(replace_type, replace_const):
 
         current_line_number = prop_type_start
         assign_start = lines[current_line_number].find('=')
-        new_lines = ['\n']
+        new_lines = [lines[first_non_import_line_number - 1]]
         new_lines.append(
-            'const %s %s ' % (replace_const, lines[current_line_number][assign_start:])
+            'const %s %s ' % (
+                replace_const,
+                lines[current_line_number][assign_start:]
+            )
         )
 
+        print('WHATE', new_lines)
         while current_line_number < prop_type_end:
             current_line_number = current_line_number + 1
             new_lines.append(lines[current_line_number])
@@ -50,17 +54,13 @@ def get_line_numbers(lines, replace_type):
         blank_line = line.strip() == ''
 
         if not first_non_import_line_number:
-            print('\nChecking line: %s Are we in import? %s' % (line, import_open_params > 0))
-          
             if has_import:
                 import_open_params = line.count('{') - line.count('}')
-                print('...has import, open params %d' % (import_open_params))
 
             elif import_open_params > 0:
                 open_close_diff = line.count('{') - line.count('}')
                 import_open_params = import_open_params + open_close_diff
-                print('...in import, open params %d, param diff %d' % (import_open_params, open_close_diff))
-          
+
             elif not has_import and import_open_params == 0 and not blank_line:
                 first_non_import_line_number = line_number
 
@@ -74,10 +74,9 @@ def get_line_numbers(lines, replace_type):
         elif prop_type_open_params != 0:
             open_close_diff = line.count('{') - line.count('}')
             prop_type_open_params = prop_type_open_params + open_close_diff
-            
+
             if prop_type_open_params == 0:
                 prop_type_end = line_number
-    print(first_non_import_line_number, prop_type_start, prop_type_end)
     return first_non_import_line_number, prop_type_start, prop_type_end
 
 
@@ -94,9 +93,17 @@ def suggestor_replace_props_with_const(replace_type, replace_const):
             return []
 
         assign_start = lines[prop_type_start].find('=')
-        first_line = '%s %s\n' % (lines[prop_type_start][:assign_start + 1], replace_const)
+        semicolon = ''
+        if lines[prop_type_end].strip()[-1:] == ';':
+            semicolon = ';'
 
-        return [codemod.Patch(prop_type_start, prop_type_end + 1, first_line)]
+        new_lines = '%s %s%s\n' % (
+            lines[prop_type_start][:assign_start + 1],
+            replace_const,
+            semicolon
+        )
+
+        return [codemod.Patch(prop_type_start, prop_type_end + 1, new_lines)]
     return build_prop_types_patch_replace_with_const
 
 
