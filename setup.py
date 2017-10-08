@@ -29,5 +29,5 @@ setup(
     long_description=long_descr,
     author="Nathan Norton",
     author_email="nthnnrtn@gmail.com",
-    url="",
+    url="https://github.com/Xesued/hoist-prop-types",
 )

@@ -17,4 +17,3 @@ hoist-prop-types ./my/dir/
 ```
 
 This will read all `.js` and `.jsx` files and try to hoist the prop types to the top.
-
