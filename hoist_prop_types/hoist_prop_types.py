@@ -29,7 +29,6 @@ def suggestor_insert_prop_types(replace_type, replace_const):
             )
         )
 
-        print('WHATE', new_lines)
         while current_line_number < prop_type_end:
             current_line_number = current_line_number + 1
             new_lines.append(lines[current_line_number])
@@ -64,7 +63,7 @@ def get_line_numbers(lines, replace_type):
             elif not has_import and import_open_params == 0 and not blank_line:
                 first_non_import_line_number = line_number
 
-        # If we haven't found the proptype declaration yet, 
+        # If we haven't found the proptype declaration yet,
         # lets keep looking
         if not prop_type_start and replace_type in line:
             prop_type_start = line_number
@@ -120,9 +119,6 @@ def main():
     )
     args = parser.parse_args()
     directory = args.directory
-
-    print('Executing hoist-prop-types %s.' % __version__)
-    print('directory: %s' % directory)
 
     extension_filter = codemod.path_filter(['js', 'jsx'])
 
