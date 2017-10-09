@@ -4,7 +4,7 @@ hoist-prop-types
 A codemod that will hoist prop types and default props to the top of the file. 
 Currently only works with files with one component.
 
-### Modivation
+### Motivation
 The main purpose is to bring the more important parts of your components, `propTypes`, 
 to the top of the file.  PropTypes help explains what your component does, almost as 
 much as the render method.  Keeping them close to the top of your file helps minimize 
