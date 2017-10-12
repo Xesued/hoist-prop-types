@@ -66,8 +66,16 @@ def get_line_numbers(lines, replace_type):
         # If we haven't found the proptype declaration yet,
         # lets keep looking
         if not prop_type_start and replace_type in line:
+            # If there isn't any open brackets, it is difficult too
+            # know if the props are defined else where.
+            if line.count('{') == 0:
+                break
+
             prop_type_start = line_number
-            prop_type_open_params = line.count('{') - line.count('}');
+            prop_type_open_params = line.count('{') - line.count('}')
+            if prop_type_open_params == 0:
+                prop_type_end = line_number
+                break
 
         # We've found the prop type start, lets find the end.
         elif prop_type_open_params != 0:
@@ -76,6 +84,7 @@ def get_line_numbers(lines, replace_type):
 
             if prop_type_open_params == 0:
                 prop_type_end = line_number
+
     return first_non_import_line_number, prop_type_start, prop_type_end
 
 
