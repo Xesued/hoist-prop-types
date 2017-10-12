@@ -6,7 +6,7 @@ import argparse
 import sys
 import codemod
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 PROP_TYPES_LINE_REG = 'propTypes'
